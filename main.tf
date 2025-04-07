@@ -170,12 +170,14 @@ resource "null_resource" "post_eks_setup" {
 
 data "aws_eks_cluster" "cluster" {
   name = var.cluster_name
+  depends_on = [ aws_eks_cluster.eks_cluster ]
 }
 
 data "aws_eks_cluster_auth" "cluster" {
   name = var.cluster_name
+  depends_on = [ aws_eks_cluster.eks_cluster ]  
 }
 
-data "aws_iam_openid_connect_provider" "oidc" {
-  url = data.aws_eks_cluster.cluster.identity[0].oidc[0].issuer
-}
+# data "aws_iam_openid_connect_provider" "oidc" {
+#   url = data.aws_eks_cluster.cluster.identity[0].oidc[0].issuer
+# }

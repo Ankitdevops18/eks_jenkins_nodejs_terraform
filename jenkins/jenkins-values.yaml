@@ -17,10 +17,10 @@ controller:
   installPlugins:
     - kubernetes:1.30.1
     - workflow-aggregator:2.6
-    - git:4.11.5
+    - git:5.7.0
     - docker-workflow:1.28
     - nodejs:1.5.1
-    - workflow-job:2.44
+    - workflow-job:latest
     - blueocean:1.25.3
 
   javaOpts: "-Xmx512m"

@@ -81,7 +81,8 @@ resource "kubernetes_config_map" "jenkins_jcasc" {
     "jenkins.yaml" = file("${path.module}/jenkins/jenkins.yaml")
   }
   depends_on = [
-    local_file.jenkins_config
+    local_file.jenkins_config,
+    null_resource.pre_jenkins_setup
   ]
 }
 

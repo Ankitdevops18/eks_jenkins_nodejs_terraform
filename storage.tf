@@ -1,19 +1,31 @@
+#Create IAM OIDC Provider for EKS Cluster
+resource "aws_iam_openid_connect_provider" "oidc" {
+  client_id_list = ["sts.amazonaws.com"]
+  thumbprint_list = ["9e99a48a9960b14926bb7f3b02e22da0ecd4e4c1"] # Default thumbprint for AWS
+  url = data.aws_eks_cluster.cluster.identity[0].oidc[0].issuer
+}
+
+#Output the OIDC URL for the EKS cluster
+output "eks_oidc_url" {
+  value = data.aws_eks_cluster.cluster.identity[0].oidc[0].issuer
+}
+
 #Create EBS CSI Driver IAM Role
 resource "aws_iam_role" "ebs_csi_irsa_role" {
   name = "AmazonEKS_EBS_CSI_Driver_IRSA"
 
   assume_role_policy = jsonencode({
-    Version = "2012-10-17"
+    Version = "2012-10-17",
     Statement = [
       {
-        Effect = "Allow"
+        Effect = "Allow",
         Principal = {
-          Federated = data.aws_iam_openid_connect_provider.oidc.arn
-        }
-        Action = "sts:AssumeRoleWithWebIdentity"
+          Federated = aws_iam_openid_connect_provider.oidc.arn
+        },
+        Action = "sts:AssumeRoleWithWebIdentity",
         Condition = {
           StringEquals = {
-            "${data.aws_eks_cluster.cluster.identity[0].oidc[0].issuer}:sub" = "system:serviceaccount:kube-system:ebs-csi-controller-sa"
+            "${replace(data.aws_eks_cluster.cluster.identity[0].oidc[0].issuer, "https://", "")}:sub" = "system:serviceaccount:kube-system:ebs-csi-controller-sa"
           }
         }
       }
