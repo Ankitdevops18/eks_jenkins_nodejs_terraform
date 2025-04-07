@@ -78,6 +78,11 @@ variable "node_iam_policy" {
   type        = list(string)
 }
 
+variable "ebs_csi_policy" {
+  description = "IAM policies to attach to the EBS CSI driver role."
+  type        = string
+}
+
 variable "key_name" {
   description = "The name of the key pair to use for SSH access to the worker nodes."
   type        = string
