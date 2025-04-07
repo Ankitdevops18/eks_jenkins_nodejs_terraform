@@ -13,12 +13,12 @@
 # Ignore all .terraform directories
 
 
-
-
-
 #Jenkins.yaml file
 
 jenkins/jenkins.yaml
+
+#.pem file
+eks.pem
 
 # .tfstate files
 *.tfstate
