@@ -51,7 +51,7 @@ resource "aws_security_group" "eks_cluster_sg" {
 }
 
 resource "aws_security_group_rule" "eks_ingress_rules" {
-  for_each      = toset([for p in var.ports : tostring(p)]) # ✅ convert to set of strings
+  for_each      = toset([for p in var.ports : tostring(p)]) # convert to set of strings
 
   type              = "ingress"
   from_port         = tonumber(each.value)
@@ -135,11 +135,6 @@ data "aws_iam_policy_document" "eks_node_assume_role" {
   }
 }
 
-#Adding null resource to run commands after EKS setup
-# This null resource will run commands to set up the EKS cluster after it has been created
-# and the nodes are ready. It will update the kubeconfig, get the nodes, and install Jenkins using Helm.
-# This is useful for automating the setup of the EKS cluster and installing necessary tools.
-# Note: Ensure that you have the AWS CLI and Helm installed and configured on your local machine.
 
 resource "helm_release" "ebs_csi_driver" {
   name       = "aws-ebs-csi-driver"
@@ -210,6 +205,12 @@ resource "kubernetes_service_account" "ebs_csi_sa" {
 }
 
 
+# Adding null resource to run commands after EKS setup
+# This null resource will run commands to set up the EKS cluster after it has been created
+# and the nodes are ready. It will update the kubeconfig, get the nodes, and install Jenkins using Helm.
+# This is useful for automating the setup of the EKS cluster and installing necessary tools.
+# Note: Ensure that you have the AWS CLI and Helm installed and configured on your local machine.
+
 resource "null_resource" "post_eks_setup" {
   depends_on = [
     aws_eks_cluster.eks_cluster,
@@ -261,38 +262,6 @@ resource "null_resource" "post_eks_setup" {
     EOT
   }
 }
-
-# resource "kubernetes_storage_class" "ebs_csi" {
-#   metadata {
-#     name = "ebs-sc"
-#     annotations = {
-#       "storageclass.kubernetes.io/is-default-class" = "true"
-#     }
-#   }
-#   storage_provisioner  = "ebs.csi.aws.com"
-#   volume_binding_mode  = "Immediate"
-#   reclaim_policy       = "Delete"
-#   allow_volume_expansion = true
-#   depends_on = [ null_resource.post_eks_setup ]
-# }
-
-    #   echo "Creating EBS CSI Driver.."
-    #   if ! aws eks describe-addon --cluster-name ${var.cluster_name} --addon-name ${var.ebs_csi_addon_name} --region ${var.region} --profile ${var.profile} > /dev/null 2>&1; then
-    #     aws eks create-addon \
-    #         --cluster-name ${var.cluster_name} \
-    #         --addon-name ${var.ebs_csi_addon_name} \
-    #         --service-account-role-arn ${aws_iam_role.eks_node_role.arn} \
-    #         --region ${var.region} \
-    #         --profile ${var.profile}
-    #         --addon-version latest
-    #     if [ $? -ne 0 ]; then
-    #         echo "Failed to create EBS CSI Driver"
-    #         exit 1
-    #     fi
-    #     echo "EBS CSI Driver created successfully"
-    #   else
-    #    echo "EBS CSI addon already exists, skipping"
-    #   fi
 
 resource "kubernetes_storage_class" "ebs_csi" {
   metadata {
