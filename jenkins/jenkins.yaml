@@ -1,0 +1,58 @@
+jenkins:
+  systemMessage: "Jenkins configured as code!"
+  numExecutors: 2
+  mode: NORMAL
+  scmCheckoutRetryCount: 2
+
+  tools:
+    dockerTool:
+      installations:
+        - name: "default"
+    nodejs:
+      installations:
+        - name: "default"
+          home: "/usr/local/bin/node"
+    git:
+      installations:
+        - name: "Default"
+          home: "/usr/bin/git"
+
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "admin"
+          password: "admin"
+
+  authorizationStrategy:
+    loggedInUsersCanDoAnything:
+      allowAnonymousRead: false
+
+  jobs:
+    - script: >
+        pipelineJob('Nodejs-CI-CD') {
+          definition {
+            cpsScm {
+              scm {
+                git {
+                  remote {
+                    url('https://github.com/Ankitdevops18/nodejs-sample.git')
+                  }
+                  branches('master')
+                }
+              }
+              scriptPath('Jenkinsfile')
+            }
+          }
+        }
+
+  credentials:
+    system:
+      domainCredentials:
+        - credentials:
+            - usernamePassword:
+                scope: GLOBAL
+                id: "docker-hub-creds"
+                username: "ankitsolanki1821@gmail.com"
+                password: " "
+                description: "DockerHub credentials for Jenkins"
