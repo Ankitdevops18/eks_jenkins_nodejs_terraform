@@ -1,1 +1,53 @@
-.terraform/providers/registry.terraform.io/hashicorp/aws/5.94.1/darwin_amd64/terraform-provider-aws_v5.94.1_x5 
+# Local .terraform directories
+**/.terraform/*
+.terraform/*
+.terraform/providers/registry.terraform.io/hashicorp/aws/4.67.0/windows_amd64/terraform-provider-aws_v4.67.0_x5.exe
+.terraform/providers/registry.terraform.io/hashicorp/aws/5.94.1/darwin_amd64/terraform-provider-aws_v5.94.1_x5
+.terraform/providers/registry.terraform.io/hashicorp/helm/2.17.0/darwin_amd64/terraform-provider-helm_v2.17.0_x5
+.terraform/providers/registry.terraform.io/hashicorp/kubernetes/2.36.0/darwin_amd64/terraform-provider-kubernetes_v2.36.0_x5
+.terraform/providers/registry.terraform.io/hashicorp/local/2.4.0/darwin_amd64/terraform-provider-local_v2.4.0_x5
+.terraform/providers/registry.terraform.io/hashicorp/null/3.2.1/darwin_amd64/terraform-provider-null_v3.2.1_x5
+.terraform/providers/registry.terraform.io/hashicorp/random/3.4.3/darwin_amd64/terraform-provider-random_v3.4.3_x5
+.terraform/providers/registry.terraform.io/hashicorp/template/2.2.0/darwin_amd64/terraform-provider-template_v2.2.0_x5
+.terraform/providers/registry.terraform.io/hashicorp/tls/4.0.0/darwin_amd64/terraform-provider-tls_v4.0.0_x5
+# Ignore all .terraform directories
+
+
+
+
+
+#Jenkins.yaml file
+
+jenkins/jenkins.yaml
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# Crash log files
+crash.log
+crash.*.log
+
+# Exclude all .tfvars files, which are likely to contain sensitive data, such as
+# password, private keys, and other secrets. These should not be part of version 
+# control as they are data points which are potentially sensitive and subject 
+# to change depending on the environment.
+#*.tfvars
+*.tfvars.json
+
+# Ignore override files as they are usually used to override resources locally and so
+# are not checked in
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Include override files you do wish to add to version control using negated pattern
+# !example_override.tf
+
+# Include tfplan files to ignore the plan output of command: terraform plan -out=tfplan
+# example: *tfplan*
+
+# Ignore CLI configuration files
+.terraformrc
+terraform.rc.terraform/providers/registry.terraform.io/hashicorp/kubernetes/2.36.0/darwin_amd64/terraform-provider-kubernetes_v2.36.0_x5
