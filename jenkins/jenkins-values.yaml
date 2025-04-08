@@ -7,13 +7,32 @@ controller:
   serviceType: LoadBalancer
   servicePort: 80
   imagePullPolicy: "Always"
+  javaOpts: "-Djenkins.install.runSetupWizard=false -Djenkins.CASC_JENKINS_CONFIG=/var/jenkins_home/casc_configs -Djenkins.model.Jenkins.logStartupPerformance=true"
+
+  containerSecurityContext:
+    privileged: true
+    allowPrivilegeEscalation: true
+
+  securityContext:
+    enabled: true
+    fsGroup: 0
+    runAsUser: 1000
+
   additionalVolumes:
+    - name: docker-sock
+      hostPath:
+        path: /var/run/docker.sock
+        type: Socket
     - name: kubeconfig
       secret:
         secretName: jenkins-kubeconfig
+
   additionalVolumeMounts:
+    - name: docker-sock
+      mountPath: /var/run/docker.sock
     - name: kubeconfig
       mountPath: /var/jenkins_home/.kube
+
   installPlugins:
     - kubernetes:1.30.1
     - workflow-aggregator:2.6
@@ -23,9 +42,87 @@ controller:
     - workflow-job:latest
     - blueocean:1.25.3
 
+  initializationScripts:
+    init-hook: |
+      println("Waiting for plugins to install...")
+
   javaOpts: "-Xmx512m"
 
+  containers:
+    - name: kaniko
+      image: gcr.io/kaniko-project/executor:latest
+      command:
+        - sleep
+        - infinity
+      volumeMounts:
+        - name: docker-config
+          mountPath: /kaniko/.docker
+  volumes:
+    - name: docker-config
+      secret:
+        secretName: regcred
+
+
   JCasC:
+    enabled: true
+    defaultConfig: false
     configScripts:
-      jcasc-config: |
-        {{ .Files.Get "jenkins/jenkins.yaml" }}
+      jcasc-config.yaml: |
+        jenkins:
+          systemMessage: "Jenkins configured as code!"
+          numExecutors: 2
+          mode: NORMAL
+          scmCheckoutRetryCount: 2
+
+          tools:
+            dockerTool:
+              installations:
+                - name: "default"
+            nodejs:
+              installations:
+                - name: "default"
+                  home: "/usr/bin"
+            git:
+              installations:
+                - name: "Default"
+                  home: "/usr/bin/git"
+
+          securityRealm:
+            local:
+              allowsSignup: false
+              users:
+                - id: "admin"
+                  password: "admin"
+
+          authorizationStrategy:
+            loggedInUsersCanDoAnything:
+              allowAnonymousRead: false
+
+          credentials:
+            system:
+              domainCredentials:
+                - credentials:
+                    - usernamePassword:
+                        scope: GLOBAL
+                        id: "docker-hub-creds"
+                        username: "ankitsolanki1821@gmail.com"
+                        password: " "
+                        description: "DockerHub credentials for Jenkins"
+
+          jobs:
+            - script: >
+                pipelineJob('Nodejs-CI-CD') {
+                  definition {
+                    cpsScm {
+                      scm {
+                        git {
+                          remote {
+                            url('https://github.com/Ankitdevops18/nodejs-sample.git')
+                          }
+                          branches('master')
+                        }
+                      }
+                      scriptPath('Jenkinsfile')
+                    }
+                  }
+                }
