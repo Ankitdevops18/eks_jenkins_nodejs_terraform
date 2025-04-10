@@ -16,20 +16,29 @@ controller:
   securityContext:
     enabled: true
     fsGroup: 0
-    runAsUser: 1000
+    runAsUser: 0
+
+  lifecycle:
+    postStart:
+      exec:
+        command:
+          - "sh"
+          - "-c"
+          - >
+            nohup /usr/local/bin/buildkitd > /tmp/buildkitd.log 2>&1 &
 
   additionalVolumes:
-    - name: docker-sock
+    - name: containerd-sock
       hostPath:
-        path: /var/run/docker.sock
+        path: /run/containerd/containerd.sock
         type: Socket
     - name: kubeconfig
       secret:
         secretName: jenkins-kubeconfig
 
   additionalVolumeMounts:
-    - name: docker-sock
-      mountPath: /var/run/docker.sock
+    - name: containerd-sock
+      mountPath: /run/containerd/containerd.sock
     - name: kubeconfig
       mountPath: /var/jenkins_home/.kube
 

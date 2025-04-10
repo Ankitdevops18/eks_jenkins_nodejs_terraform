@@ -4,6 +4,16 @@ FROM jenkins/jenkins:lts
 USER root
 
 
+# Install nerdctl and containerd
+RUN apt-get update && \
+    apt-get install -y curl containerd jq wget && \
+    wget https://github.com/containerd/nerdctl/releases/latest/download/nerdctl-full-2.0.4-linux-amd64.tar.gz && \  
+    tar -xvzf nerdctl-full-2.0.4-linux-amd64.tar.gz -C /usr/local
+
+RUN chmod +x /usr/local/bin/nerdctl && \
+    chmod +x /usr/local/bin/buildkitd
+
+
 # Install Docker, Kubectl, AWS CLI, Node.js, npm
 RUN apt-get update && apt-get install -y \
     curl gnupg2 lsb-release apt-transport-https ca-certificates software-properties-common \
@@ -23,8 +33,3 @@ RUN mkdir -p /usr/share/jenkins/lib && \
 
 # Add Jenkins user to Docker group for access to host Docker daemon
 RUN usermod -aG docker jenkins && usermod -aG root jenkins
-
-# Ensure docker.sock has appropriate permissions at runtime (should be mounted)
-VOLUME /var/run/docker.sock
-
-USER jenkins
