@@ -20,6 +20,9 @@ jenkins/jenkins.yaml
 #.pem file
 eks.pem
 
+#config.json file
+config.json
+
 # .tfstate files
 *.tfstate
 *.tfstate.*

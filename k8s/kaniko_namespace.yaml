@@ -1,0 +1,5 @@
+# This file defines a namespace for the application to isolate its resources.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kaniko

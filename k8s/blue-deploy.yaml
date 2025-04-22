@@ -1,0 +1,23 @@
+# Manifest for blue deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-blue
+  namespace: nodejs-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nodejs
+      version: blue
+  template:
+    metadata:
+      labels:
+        app: nodejs
+        version: blue
+    spec:
+      containers:
+      - name: nodejs
+        image: ankitofficial1821/hello-node-app:latest
+        ports:
+        - containerPort: 3000

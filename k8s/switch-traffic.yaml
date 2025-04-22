@@ -1,0 +1,15 @@
+# This file contains the Kubernetes configuration for switching traffic between two versions of a Node.js application (green and blue) using a LoadBalancer service.
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodejs-service
+  namespace: nodejs-app
+spec:
+  type: LoadBalancer
+  selector:
+    app: nodejs # or nodejs-${colour} based on which you want to serve
+    version: blue  #current colour
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000

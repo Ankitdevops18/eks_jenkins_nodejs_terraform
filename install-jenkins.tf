@@ -122,6 +122,21 @@ resource "null_resource" "jenkins_config" {
         fi
       fi
 
+      kubectl apply -f ${path.module}/k8s/jenkins-role.yaml
+      if [ $? -ne 0 ]; then
+        echo "Failed to apply Jenkins Role"
+        exit 1
+      fi
+      echo "Jenkins Role applied successfully"
+
+      kubectl apply -f ${path.module}/k8s/namespace.yaml
+      kubectl apply -f ${path.module}/k8s/kaniko_namespace.yaml
+      kubectl apply -f ${path.module}/k8s/blue-deploy.yaml
+      kubectl apply -f ${path.module}/k8s/service-blue.yaml
+      kubectl apply -f ${path.module}/k8s/switch-traffic.yaml
+
+
+
     EOT
   }
   

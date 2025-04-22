@@ -1,0 +1,16 @@
+# This file defines a Kubernetes service for the Node.js application in the blue environment.
+# It exposes the application on port 80 and forwards traffic to port 3000 of the pods.
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodejs-blue-service
+  namespace: nodejs-app
+spec:
+  type: LoadBalancer
+  selector:
+    app: nodejs
+    version: blue
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000

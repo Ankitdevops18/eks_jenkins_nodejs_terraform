@@ -5,13 +5,6 @@ jenkins:
   scmCheckoutRetryCount: 2
 
   tools:
-    dockerTool:
-      installations:
-        - name: "default"
-    nodejs:
-      installations:
-        - name: "default"
-          home: "/usr/bin"
     git:
       installations:
         - name: "Default"
@@ -28,30 +21,20 @@ jenkins:
     loggedInUsersCanDoAnything:
       allowAnonymousRead: false
 
-  credentials:
-    system:
-      domainCredentials:
-        - credentials:
-            - usernamePassword:
-                scope: GLOBAL
-                id: "docker-hub-creds"
-                username: "${dockerhub_username}"
-                password: "${dockerhub_password}"
-                description: "DockerHub credentials for Jenkins"
-  jobs:
-    - script: >
-        pipelineJob('Nodejs-CI-CD') {
-          definition {
-            cpsScm {
-              scm {
-                git {
-                  remote {
-                    url('${github_url}')
-                  }
-                  branches('${github_branch}')
+jobs:
+  - script: >
+      pipelineJob('Nodejs-CI-CD') {
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  url('${github_url}')
                 }
+                branches('${github_branch}')
               }
-              scriptPath('Jenkinsfile')
             }
+            scriptPath('Jenkinsfile')
           }
         }
+      }
