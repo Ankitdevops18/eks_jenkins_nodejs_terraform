@@ -65,10 +65,10 @@ controller:
           authorizationStrategy:
             loggedInUsersCanDoAnything:
               allowAnonymousRead: false
-          crumbIssuer:
-            excludeClientIPFromCrumb: false
-            proxyCompatability: true
-
+          crumbIssuer: 
+            standard:
+              excludeClientIPFromCrumb: true
+              
         jobs:
           - script: >
               pipelineJob('Nodejs-CI-CD') {

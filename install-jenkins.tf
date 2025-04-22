@@ -134,8 +134,12 @@ resource "null_resource" "jenkins_config" {
       kubectl apply -f ${path.module}/k8s/blue-deploy.yaml
       kubectl apply -f ${path.module}/k8s/service-blue.yaml
       kubectl apply -f ${path.module}/k8s/switch-traffic.yaml
-
-
+      kubectl create secret generic regcred --from-file=config.json=${path.module}/config.json -n kaniko
+      if [ $? -ne 0 ]; then
+        echo "Failed to create regcred secret" 
+        exit 1
+      fi
+      echo "regcred secret created successfully" 
 
     EOT
   }
