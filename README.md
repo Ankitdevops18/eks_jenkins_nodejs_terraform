@@ -23,7 +23,7 @@ Terraform Repo URL     : https://github.com/Ankitdevops18/eks_jenkins_nodejs_ter
 
    terraform init
    terraform plan
-   terraform apply --auto-
+   terraform apply --auto-approve
 
 3. You will get jenkins url as part of the terraform output
 4. Hit the jenkins url & login with below credentials
