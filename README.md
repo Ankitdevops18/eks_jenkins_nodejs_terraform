@@ -13,7 +13,12 @@ Terraform Repo URL     : https://github.com/Ankitdevops18/eks_jenkins_nodejs_ter
 
 # Commands you need to run to test this whole set up 
 
-1. Clone Terraform & Source Code Repo 
+1. Clone Terraform, Source Code Repo & run below command to configure sandbox profile
+
+   aws configure --profile sandbox 
+
+   This is needed , since the code uses sandbox profile to spin up all resources
+
 2. Run below comands in terraform repo directory
 
    terraform init
@@ -41,7 +46,8 @@ Terraform Repo URL     : https://github.com/Ankitdevops18/eks_jenkins_nodejs_ter
                KUBECONFIG = "/var/jenkins_home/.kube/config"
             }
    
-   3. To Test blue or green cluster - run below command in the locak to get loadbalancer URLs of respective Cluster : 
+   3. To Test blue or green cluster - run below command in the local to first set kubeadm context & then get loadbalancer URLs of respective Cluster :
+         aws eks --region us-east-1 update-kubeconfig --name my-eks-cluster  --profile sandbox
          kubect get svc -n nodejs-app
    4. Hit the endpoint URL to get the Node Js application output
    5. Once the testing is done, to Switch the traffic to Green cluster & remove blue - set SWITCH_TRAFFIC flag to true
