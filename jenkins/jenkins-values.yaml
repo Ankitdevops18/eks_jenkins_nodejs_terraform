@@ -68,6 +68,12 @@ controller:
           crumbIssuer: 
             standard:
               excludeClientIPFromCrumb: true
+
+        tool:
+          nodejs:
+            installations:
+              - name: "default"
+                home: "nodejs"
               
         jobs:
           - script: >
